@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robot Control Interface</title>
+    
+    <!-- Socket.IO - Asegúrate de que esta sea la versión compatible con tu servidor Socket.IO -->
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="CSS/Global.css">
+    
+    <!-- Estilos adicionales para el nuevo servidor integrado -->
+    <style>
+        /* Agregar el indicador de estadísticas para el video */
+        #statsOverlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(0,0,0,0.5);
+            color: rgb(255, 255, 255);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 100;
+        }
+        
+        /* Estilo para controles direccionales */
+        .direction-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+            gap: 10px;
+            width: 200px;
+            margin: 0 auto;
+            margin-top: 20px;
+        }
+        
+        .direction-btn {
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Estilos para los sliders de velocidad de servo */
+        .speed-slider-container {
+            margin-top: 10px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .speed-slider-container .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .speed-slider-value {
+            font-weight: bold;
+        }
+
+        .servo-control {
+            background-color: rgba(60, 60, 60, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        /* Estilo para etiquetas de explicación de límites */
+        .limit-explanation {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 5px;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div id="controls-column">
+            <!-- Grupo de botones de video -->
+            <div class="button-group">
+                <button id="startCameraBtn" class="button"><span>Empezar Video</span></button>
+                <button id="stopCameraBtn" class="button"><span>Detener Video</span></button>
+            </div>
+
+            <!-- Mensajes de estado y error -->
+            <div class="error-message" id="error-message"></div>
+            <div id="connection-status" class="connection-status disconnected">Desconectado</div>
+
+            <!-- Controles de transmisión -->
+            <div class="button1">
+                <p class="textos">Selecciona el modo de transmisión:</p>
+
+                <div class="radio-inputs">
+                    <label class="radio">
+                        <input type="radio" name="transmission" value="synchronized" onclick="showSpeedOptions()" />
+                        <span class="name">Transmision Sincronizada</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="transmission" value="differential" onclick="showSpeedOptions()" />
+                        <span class="name">Transmision Diferencial</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="transmission" value="independent" onclick="showSpeedOptions()" />
+                        <span class="name">Transmision Independiente</span>
+                    </label>
+                </div>
+
+                <div id="speed-options" style="display: none;">
+                    <!-- Opciones de velocidad (generadas dinámicamente) -->
+                </div>
+
+                <div class="material-checkbox" id="checkbox-container" style="margin-top: 10px;">
+                    <!-- Checkboxes (generados dinámicamente) -->
+                </div>
+            </div>
+
+            <!-- Controles direccionales (nuevo) -->
+            <div class="direction-controls" id="direction-controls" style="display: none;">
+                <button id="btnForward" class="button direction-btn" style="grid-column: 2; grid-row: 1;">
+                    <svg class="arrow-icon" viewBox="0 0 24 24" width="24" height="24">
+                        <path d="M12 4l-8 8h6v8h4v-8h6z" fill="currentColor"/>
+                    </svg>
+                </button>
+                <button id="btnLeft" class="button direction-btn" style="grid-column: 1; grid-row: 2;">
+                    <svg class="arrow-icon" viewBox="0 0 24 24" width="24" height="24">
+                        <path d="M4 12l8-8v6h8v4h-8v6z" fill="currentColor"/>
+                    </svg>
+                </button>
+                <button id="btnStop" class="button direction-btn" style="grid-column: 2; grid-row: 2; background: #dc3545;">
+                    <svg class="arrow-icon" viewBox="0 0 24 24" width="24" height="24">
+                        <rect x="6" y="6" width="12" height="12" fill="currentColor"/>
+                    </svg>
+                </button>
+                <button id="btnRight" class="button direction-btn" style="grid-column: 3; grid-row: 2;">
+                    <svg class="arrow-icon" viewBox="0 0 24 24" width="24" height="24">
+                        <path d="M20 12l-8-8v6h-8v4h8v6z" fill="currentColor"/>
+                    </svg>
+                </button>
+                <button id="btnBackward" class="button direction-btn" style="grid-column: 2; grid-row: 3;">
+                    <svg class="arrow-icon" viewBox="0 0 24 24" width="24" height="24">
+                        <path d="M12 20l8-8h-6v-8h-4v8h-6z" fill="currentColor"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Slider para velocidad general (nuevo) -->
+            <div style="margin-top: 20px; width: 80%; margin-left: auto; margin-right: auto;">
+                <p class="textos">Velocidad general: <span id="speedValue">128</span></p>
+                <input type="range" min="0" max="255" value="128" id="speedRange" style="width: 100%;">
+            </div>
+
+            <!-- Controles de motores -->
+            <div class="btn2">
+                <button id="startMotorsBtn" class="button"><span>ON Motores</span></button>
+                <button id="stopMotorsBtn" class="button"><span>OFF Motores</span></button>
+            </div>
+
+            <!-- Controles de servos -->
+            <!-- Modificaciones para la sección de control MG995 -->
+            <div class="servo-control">
+                <h3>Servo MG995 (180°)</h3>
+                <p>Posición actual: <span id="mg995-angle">0</span>°</p>
+                <div>
+                    <p>Límite de ángulo: <span id="mg995-limit">180</span>°</p>
+                    <div class="slider-container">
+                        <input type="range" id="mg995-slider" min="0" max="180" step="1" value="180" class="angle-slider">
+                        <div class="limit-explanation">Ajusta este slider para limitar el ángulo máximo de movimiento.</div>
+                    </div>
+                </div>
+                <div class="servo-buttons">
+                    <button id="mg995-move" class="button"><span>Mover</span></button>
+                    <button id="mg995-stop" class="button"><span>Detener</span></button>
+                </div>
+                <div class="checkbox-container">
+                    <label class="material-checkbox">
+                        <input type="checkbox" id="mg995-reverse">
+                        <span class="checkmark"></span>
+                        Invertir dirección
+                    </label>
+                </div>
+                <div class="speed-slider-container">
+                    <div class="slider-label">
+                        <span>Velocidad: </span>
+                        <span id="mg995-speed-text" class="speed-slider-value">Media</span>
+                    </div>
+                    <input type="range" id="mg995-speed-slider" min="1" max="3" step="1" value="2" class="speed-slider">
+                </div>
+            </div>
+
+            <!-- Modificaciones para la sección de control DS04 -->
+            <div class="servo-control">
+                <h3>Servo DS04 (360°)</h3>
+                <p>Posición actual: <span id="ds04-angle">0</span>°</p>
+                <div>
+                    <p>Límite de ángulo: <span id="ds04-limit">360</span>°</p>
+                    <div class="slider-container">
+                        <input type="range" id="ds04-slider" min="0" max="360" step="1" value="360" class="angle-slider">
+                        <div class="limit-explanation">Ajusta este slider para limitar el ángulo máximo de movimiento.</div>
+                    </div>
+                </div>
+                <div class="servo-buttons">
+                    <button id="ds04-move" class="button"><span>Mover</span></button>
+                    <button id="ds04-stop" class="button"><span>Detener</span></button>
+                </div>
+                <div class="checkbox-container">
+                    <label class="material-checkbox">
+                        <input type="checkbox" id="ds04-reverse">
+                        <span class="checkmark"></span>
+                        Invertir dirección
+                    </label>
+                </div>
+                <div class="speed-slider-container">
+                    <div class="slider-label">
+                        <span>Velocidad: </span>
+                        <span id="ds04-speed-text" class="speed-slider-value">Media</span>
+                    </div>
+                    <input type="range" id="ds04-speed-slider" min="1" max="3" step="1" value="2" class="speed-slider">
+                </div>
+            </div>
+            
+            <!-- Estado de los Motores (nuevo) -->
+            <div style="background-color: #333; color: #fff; border-radius: 8px; padding: 10px; margin-top: 20px; font-family: monospace;">
+                <div id="motorDisplayText">Estado: Motores apagados</div>
+            </div>
+
+            <!-- Registro de Eventos (nuevo) -->
+            <div style="background-color: #333; color: #fff; border-radius: 8px; padding: 15px; margin-top: 20px;">
+                <h5 style="border-bottom: 1px solid #555; padding-bottom: 10px; margin-bottom: 15px;">Registro</h5>
+                <div style="height: 150px; overflow-y: auto;">
+                    <pre id="logContainer" style="font-size: 12px; margin: 0; white-space: pre-wrap; word-wrap: break-word;"></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna de video -->
+        <div id="video-column" class="videocolumn">
+            <div id="video-call-div" style="position: relative;">
+                <canvas id="local-video" width="640" height="480"></canvas>
+                <div id="statsOverlay">FPS: 0 | Resolución: 0x0</div>
+            </div>
+
+            <!-- Animación de transmisión -->
+            <div class="boxes" id="Figura-Transmision">
+                <div class="box">
+                    <div></div><div></div><div></div><div></div>
+                </div>
+                <div class="box">
+                    <div></div><div></div><div></div><div></div>
+                </div>
+                <div class="box">
+                    <div></div><div></div><div></div><div></div>
+                </div>
+                <div class="box">
+                    <div></div><div></div><div></div><div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="JS/utilsUni.js"></script>
+    <script>
+        // Función para registrar mensajes en el log visual - Accesible globalmente
+        window.logMessage = function(message, isError = false) {
+            const logContainer = document.getElementById('logContainer');
+            if (logContainer) {
+                const now = new Date();
+                const timestamp = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+                const logEntry = `[${timestamp}] ${message}`;
+                
+                const logLine = document.createElement('div');
+                logLine.textContent = logEntry;
+                if (isError) {
+                    logLine.style.color = '#ff6b6b';
+                }
+                
+                logContainer.appendChild(logLine);
+                logContainer.scrollTop = logContainer.scrollHeight;
+                
+                // Limitar el número de entradas de registro
+                while (logContainer.children.length > 100) {
+                    logContainer.removeChild(logContainer.firstChild);
+                }
+            }
+        };
+    </script>
+
+    <script type="module">
+        import { initializeVideoStream, startVideoStream, stopVideoStream, logMessage } from './JS/videoTransmission.js';
+        import { initMotorControl, sendMotorControlFromUI, turnOffMotors, setupDirectionControls, setupServoControls } from './JS/motoresUni.js';
+
+        // Inicializar la aplicación cuando se carga la página
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Inicializando aplicación...');
+            window.logMessage('Inicializando aplicación...');
+            
+            try {
+                // Inicializar la transmisión de video
+                initializeVideoStream();
+                
+                // Inicializar el control de motores
+                initMotorControl();
+                
+                // Configurar botones de control de video
+                const startCameraBtn = document.getElementById('startCameraBtn');
+                const stopCameraBtn = document.getElementById('stopCameraBtn');
+                
+                if (startCameraBtn) {
+                    startCameraBtn.addEventListener('click', () => {
+                        console.log('Iniciando video');
+                        startVideoStream();
+                        startCameraBtn.classList.add('active');
+                        stopCameraBtn.classList.remove('active');
+                    });
+                } else {
+                    console.error('No se encontró el botón startCameraBtn');
+                }
+                
+                if (stopCameraBtn) {
+                    stopCameraBtn.addEventListener('click', () => {
+                        console.log('Deteniendo video');
+                        stopVideoStream();
+                        stopCameraBtn.classList.add('active');
+                        startCameraBtn.classList.remove('active');
+                    });
+                } else {
+                    console.error('No se encontró el botón stopCameraBtn');
+                }
+                
+                // Configurar botones de motores
+                const startMotorsBtn = document.getElementById('startMotorsBtn');
+                const stopMotorsBtn = document.getElementById('stopMotorsBtn');
+                
+                if (startMotorsBtn) {
+                    startMotorsBtn.addEventListener('click', () => {
+                        console.log('Iniciando motores');
+                        sendMotorControlFromUI();
+                        window.logMessage('Motores iniciados');
+                        startMotorsBtn.classList.add('active');
+                        stopMotorsBtn.classList.remove('active');
+                    });
+                } else {
+                    console.error('No se encontró el botón startMotorsBtn');
+                }
+                
+                if (stopMotorsBtn) {
+                    stopMotorsBtn.addEventListener('click', () => {
+                        console.log('Deteniendo motores');
+                        turnOffMotors();
+                        window.logMessage('Motores detenidos');
+                        stopMotorsBtn.classList.add('active');
+                        startMotorsBtn.classList.remove('active');
+                    });
+                } else {
+                    console.error('No se encontró el botón stopMotorsBtn');
+                }
+                
+                // Configurar controles direccionales
+                setupDirectionControls();
+                
+                // Configurar controles de servo
+                setupServoControls();
+                
+                window.logMessage('Aplicación inicializada. Esperando conexión...');
+            } catch (error) {
+                console.error('Error durante la inicialización:', error);
+                window.logMessage('Error durante la inicialización: ' + error, true);
+            }
+        });
+    </script>
+</body>
+</html>

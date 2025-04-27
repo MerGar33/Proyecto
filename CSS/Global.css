@@ -1,0 +1,1153 @@
+/* En layoutP3.css - Modificar */
+#container {
+    display: grid;
+    /* Cambio a grid en lugar de flex */
+    grid-template-columns: 1fr 1fr;
+    /* Dos columnas de igual tamaño */
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #987fc0, #DBC9F5);
+    /* Fondo uniforme */
+}
+
+/* Eliminar las definiciones específicas de columnas y usar áreas de grid */
+#controls-column {
+    grid-column: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+#video-column {
+    grid-column: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Estilo para el video */
+video {
+    /* Ajustar el ancho del video al 100% del contenedor */
+    max-width: 100%;
+    /* Mantener la relación de aspecto */
+    height: auto;
+    /* Bordes redondeados */
+    border-radius: 16px;
+
+}
+
+
+/* Estilo para el contenedor de la llamada - OFF */
+/*CUADRO DE ATRAS DEL DEL VIDEO*/
+#video-call-div {
+    /* Posicionamiento absoluto para cubrir toda la pantalla */
+    position: relative;
+    /* Alinear al top */
+    top: 20PX;
+    /* Alinear a la izquierda */
+    left: 0;
+    /* Ancho completo */
+    width: 100%;
+    /* Altura completa */
+    height: 100%;
+    /* Ocultar por defecto */
+    display: none;
+
+}
+
+/* Estilo para el video local - EN LINEA */
+/*ESTE ES EL CUADRO EN EL QUE APARECE EL VIDEO, SOLO ESTA UNA VEZ SE INICIA
+    LA TRANSMISION DE VIDEO*/
+
+#local-video {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    margin: 0;
+    max-width: 97%;
+    max-height: 150%;
+    background: transparent;
+    /* Eliminar el fondo gris */
+    border: 5px solid #987fc0;
+    /* Usar el color del gradiente */
+    border-radius: 16px;
+    padding: 5px;
+    box-shadow: 0 0 10px rgba(152, 127, 192, 0.5);
+    /* Sombra con el mismo color */
+}
+
+#remote-video {
+    background: transparent;
+    /* Eliminar el fondo gris */
+    width: 50%;
+    height: 50%;
+    border: 5px solid #987fc0;
+    /* Mismo estilo que local-video */
+    border-radius: 16px;
+}
+
+/*ANIMATION CSS*/
+/* ANIMACION DE BOTONES NEGROS*/
+
+.button span {
+    position: relative;
+    z-index: 1;
+}
+
+.button::before {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    background: #272727;
+    border-radius: 9px;
+    transition: 0.5s;
+}
+
+.button:hover::before {
+    opacity: 0.7;
+}
+
+.button::after {
+    content: "";
+    position: absolute;
+    inset: 0px;
+    background: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
+    border-radius: 9px;
+    transition: 0.5s;
+    opacity: 0;
+    filter: blur(20px);
+}
+
+.button:hover:after {
+    opacity: 1;
+}
+
+/* BOTONES DE LA CAMARA */
+
+.btn-1:hover {
+    background-position: right top;
+}
+
+.btn-1:is(:focus, :focus-visible, :active) {
+    outline: none;
+    box-shadow:
+        0 0 0 3px var(--btn-bg-color),
+        0 0 0 6px var(--btn-bg-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .btn-donate {
+        transition: linear;
+    }
+}
+
+/* SELECTOR DE MOTORES */
+
+.radio-inputs .radio {
+    flex: 1 1 auto;
+    text-align: center;
+}
+
+.radio-inputs .radio input {
+    display: none;
+}
+
+.radio-inputs .radio .name {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    border: none;
+    padding: 0.5rem 0;
+    color: rgba(51, 65, 85, 1);
+    transition: all 0.15s ease-in-out;
+}
+
+.radio-inputs .radio input:checked+.name {
+    background-color: #fff;
+    font-weight: 600;
+}
+
+/* Hover effect */
+.radio-inputs .radio:hover .name {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Animation */
+.radio-inputs .radio input:checked+.name {
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    animation: select 0.3s ease;
+}
+
+@keyframes select {
+    0% {
+        transform: scale(0.95);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Particles */
+.radio-inputs .radio input:checked+.name::before,
+.radio-inputs .radio input:checked+.name::after {
+    content: "";
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #3b82f6;
+    opacity: 0;
+    animation: particles 0.5s ease forwards;
+}
+
+.radio-inputs .radio input:checked+.name::before {
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.radio-inputs .radio input:checked+.name::after {
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+@keyframes particles {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(var(--direction));
+    }
+}
+
+.radio-inputs .radio input:checked+.name::before {
+    --direction: -10px;
+}
+
+.radio-inputs .radio input:checked+.name::after {
+    --direction: 10px;
+}
+
+/* SELECTOR DE VELOCIDADES */
+
+.radio-inputs1 .radio {
+    flex: 1 1 auto;
+    text-align: center;
+    position: relative;
+}
+
+.radio-inputs1 .radio input {
+    display: none;
+}
+
+.radio-inputs1 .radio .name {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.7rem;
+    border: none;
+    padding: 0.7rem 0;
+    color: #2d3748;
+    font-weight: 500;
+    font-family: inherit;
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    box-shadow:
+        3px 3px 6px rgba(0, 0, 0, 0.1),
+        -3px -3px 6px rgba(255, 255, 255, 0.7);
+    transition: all 0.2s ease;
+    overflow: hidden;
+}
+
+.radio-inputs1 .radio input:checked+.name {
+    background: linear-gradient(145deg, #3b82f6, #2563eb);
+    color: white;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow:
+        inset 2px 2px 5px rgba(0, 0, 0, 0.2),
+        inset -2px -2px 5px rgba(255, 255, 255, 0.1),
+        3px 3px 8px rgba(59, 130, 246, 0.3);
+    transform: translateY(2px);
+}
+
+/* Hover effect */
+.radio-inputs1 .radio:hover .name {
+    background: linear-gradient(145deg, #f0f0f0, #ffffff);
+    transform: translateY(-1px);
+    box-shadow:
+        4px 4px 8px rgba(0, 0, 0, 0.1),
+        -4px -4px 8px rgba(255, 255, 255, 0.8);
+}
+
+.radio-inputs1 .radio:hover input:checked+.name {
+    transform: translateY(1px);
+}
+
+/* Animation */
+.radio-inputs1 .radio input:checked+.name {
+    animation: select 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Particles */
+.radio-inputs1 .radio .name::before,
+.radio-inputs1 .radio .name::after {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.radio-inputs1 .radio input:checked+.name::before,
+.radio-inputs1 .radio input:checked+.name::after {
+    animation: particles 0.8s ease-out forwards;
+}
+
+.radio-inputs1 .radio .name::before {
+    background: #60a5fa;
+    box-shadow: 0 0 6px #60a5fa;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.radio-inputs1 .radio .name::after {
+    background: #93c5fd;
+    box-shadow: 0 0 8px #93c5fd;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Sparkles */
+.radio-inputs1 .radio .name::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%),
+            rgba(59, 130, 246, 0.3) 0%,
+            transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.radio-inputs1 .radio input:checked+.name::after {
+    opacity: 1;
+    animation: sparkle-bg 1s ease-out forwards;
+}
+
+/* Multiple particles */
+.radio-inputs1 .radio input:checked+.name {
+    overflow: visible;
+}
+
+.radio-inputs1 .radio input:checked+.name::before {
+    box-shadow:
+        0 0 6px #60a5fa,
+        10px -10px 0 #60a5fa,
+        -10px -10px 0 #60a5fa;
+    animation: multi-particles-top 0.8s ease-out forwards;
+}
+
+.radio-inputs1 .radio input:checked+.name::after {
+    box-shadow:
+        0 0 8px #93c5fd,
+        10px 10px 0 #93c5fd,
+        -10px 10px 0 #93c5fd;
+    animation: multi-particles-bottom 0.8s ease-out forwards;
+}
+
+@keyframes select {
+    0% {
+        transform: scale(0.95) translateY(2px);
+    }
+
+    50% {
+        transform: scale(1.05) translateY(-1px);
+    }
+
+    100% {
+        transform: scale(1) translateY(2px);
+    }
+}
+
+@keyframes multi-particles-top {
+    0% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+
+    40% {
+        opacity: 0.8;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px) scale(0);
+        box-shadow:
+            0 0 6px transparent,
+            20px -20px 0 transparent,
+            -20px -20px 0 transparent;
+    }
+}
+
+@keyframes multi-particles-bottom {
+    0% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+
+    40% {
+        opacity: 0.8;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px) scale(0);
+        box-shadow:
+            0 0 8px transparent,
+            20px 20px 0 transparent,
+            -20px 20px 0 transparent;
+    }
+}
+
+@keyframes sparkle-bg {
+    0% {
+        opacity: 0;
+        transform: scale(0.2);
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(2);
+    }
+}
+
+/* Ripple effect */
+.radio-inputs1 .radio .name::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%),
+            rgba(255, 255, 255, 0.5) 0%,
+            transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.radio-inputs1 .radio input:checked+.name::before {
+    animation: ripple 0.8s ease-out;
+}
+
+@keyframes ripple {
+    0% {
+        opacity: 1;
+        transform: scale(0.2);
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(2.5);
+    }
+}
+
+/* Glowing border */
+.radio-inputs1 .radio input:checked+.name {
+    position: relative;
+}
+
+.radio-inputs1 .radio input:checked+.name::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: linear-gradient(45deg, rgba(59, 130, 246, 0.5), rgba(37, 99, 235, 0.5));
+
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: border-glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes border-glow {
+    0% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+
+/* CHECKBOXES DEL SELECTOR DE VELOCIDAD PARA IR EN REVERSA*/
+
+
+
+.material-checkbox input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.checkmark {
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    border: 2px solid #454B00;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.material-checkbox input[type="checkbox"]:checked~.checkmark {
+    background-color: #2F3300;
+    border-color: #454B00;
+}
+
+.material-checkbox input[type="checkbox"]:checked~.checkmark:after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 6px;
+    width: 4px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.material-checkbox input[type="checkbox"]:focus~.checkmark {
+    box-shadow: 0 0 0 2px #dfec5065;
+}
+
+.material-checkbox:hover input[type="checkbox"]~.checkmark {
+    border-color: #C3CF34;
+}
+
+.material-checkbox input[type="checkbox"]:disabled~.checkmark {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.material-checkbox input[type="checkbox"]:disabled~.checkmark:hover {
+    border-color: #4d4d4d;
+}
+
+/* FIGURA DE TRANSMISION DE VIDEO */
+
+/* FIGURA DE TRANSMISION DE VIDEO */
+
+.boxes {
+    --size: 32px;
+    --duration: 800ms;
+    height: calc(var(--size) * 2);
+    width: calc(var(--size) * 3);
+    position: relative;
+    transform-style: preserve-3d;
+    transform-origin: 50% 50%;
+    margin-top: calc(var(--size) * 1.5 * -1);
+    transform: rotateX(60deg) rotateZ(45deg) rotateY(0deg) translateZ(0px);
+    display: flex;
+    /* flexbox para centrar */
+    justify-content: center;
+    /* Centrar horizontalmente */
+    align-items: center;
+    /* Centrar verticalmente */
+}
+
+.boxes .box {
+    width: var(--size);
+    height: var(--size);
+    top: 0;
+    left: 0;
+    position: absolute;
+    transform-style: preserve-3d;
+}
+
+.boxes .box:nth-child(1) {
+    transform: translate(100%, 0);
+    -webkit-animation: box1 var(--duration) linear infinite;
+    animation: box1 var(--duration) linear infinite;
+}
+
+.boxes .box:nth-child(2) {
+    transform: translate(0, 100%);
+    -webkit-animation: box2 var(--duration) linear infinite;
+    animation: box2 var(--duration) linear infinite;
+}
+
+.boxes .box:nth-child(3) {
+    transform: translate(100%, 100%);
+    -webkit-animation: box3 var(--duration) linear infinite;
+    animation: box3 var(--duration) linear infinite;
+}
+
+.boxes .box:nth-child(4) {
+    transform: translate(200%, 0);
+    -webkit-animation: box4 var(--duration) linear infinite;
+    animation: box4 var(--duration) linear infinite;
+}
+
+.boxes .box>div {
+    --background: #202227;
+    --top: auto;
+    --right: auto;
+    --bottom: auto;
+    --left: auto;
+    --translateZ: calc(var(--size) / 2);
+    --rotateY: 0deg;
+    --rotateX: 0deg;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: var(--background);
+    top: var(--top);
+    right: var(--right);
+    bottom: var(--bottom);
+    left: var(--left);
+    transform: rotateY(var(--rotateY)) rotateX(var(--rotateX)) translateZ(var(--translateZ));
+}
+
+.boxes .box>div:nth-child(1) {
+    --top: 0;
+    --left: 0;
+}
+
+.boxes .box>div:nth-child(2) {
+    --background: #145af2;
+    --right: 0;
+    --rotateY: 90deg;
+}
+
+.boxes .box>div:nth-child(3) {
+    --background: #447cf5;
+    --rotateX: -90deg;
+}
+
+.boxes .box>div:nth-child(4) {
+    --background: #797b80;
+    --top: 0;
+    --left: 0;
+    --translateZ: calc(var(--size) * 3 * -1);
+}
+
+@-webkit-keyframes box1 {
+
+    0%,
+    50% {
+        transform: translate(100%, 0);
+    }
+
+    100% {
+        transform: translate(200%, 0);
+    }
+}
+
+@keyframes box1 {
+
+    0%,
+    50% {
+        transform: translate(100%, 0);
+    }
+
+    100% {
+        transform: translate(200%, 0);
+    }
+}
+
+@-webkit-keyframes box2 {
+    0% {
+        transform: translate(0, 100%);
+    }
+
+    50% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(100%, 0);
+    }
+}
+
+@keyframes box2 {
+    0% {
+        transform: translate(0, 100%);
+    }
+
+    50% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(100%, 0);
+    }
+}
+
+@-webkit-keyframes box3 {
+
+    0%,
+    50% {
+        transform: translate(100%, 100%);
+    }
+
+    100% {
+        transform: translate(0, 100%);
+    }
+}
+
+@keyframes box3 {
+
+    0%,
+    50% {
+        transform: translate(100%, 100%);
+    }
+
+    100% {
+        transform: translate(0, 100%);
+    }
+}
+
+@-webkit-keyframes box4 {
+    0% {
+        transform: translate(200%, 0);
+    }
+
+    50% {
+        transform: translate(200%, 100%);
+    }
+
+    100% {
+        transform: translate(100%, 100%);
+    }
+}
+
+@keyframes box4 {
+    0% {
+        transform: translate(200%, 0);
+    }
+
+    50% {
+        transform: translate(200%, 100%);
+    }
+
+    100% {
+        transform: translate(100%, 100%);
+    }
+}
+
+/*LAYOUT */
+
+/* ESTILO DE BOTONES */
+
+/* // GRUPO DE BOTONES // */
+
+.btn1 {
+    display: flex;
+    /* Usar flexbox para alinear los botones */
+    position: relative;
+    top: 10px;
+    left: 100px;
+    justify-content: center;
+    /* Centrar horizontalmente el contenido */
+    align-items: center;
+    /* Centrar verticalmente el contenido */
+}
+
+.button-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 50%;
+    /* Ajustar al ancho del contenedor */
+    max-width: 50%;
+    /* Evitar que sobresalga */
+    margin-bottom: 0;
+    /* Espacio inferior para separar del selector de transmisión */
+}
+
+.button1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    /* Ajustar al ancho del contenedor */
+    max-width: 100%;
+    /* Evitar que sobresalga */
+    margin-top: 20px;
+    /* Margen superior */
+}
+
+.btn2,
+.btn3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+    width: 100%;
+    /* Ajustar al ancho del contenedor */
+    max-width: 50%;
+    /* Evitar que sobresalga */
+    margin-top: 20px;
+    /* Margen superior */
+}
+
+/* BOTONES NEGROS */
+
+.button {
+    position: relative;
+    text-decoration: none;
+    color: #ffffff;
+    background: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 1em;
+    cursor: pointer;
+    margin: 10px 0;
+    width: 100%;
+    /* Ajustar al ancho del contenedor */
+    max-width: 200px;
+    /* Ancho máximo */
+    box-sizing: border-box;
+    /* Incluir padding en el ancho */
+    flex-shrink: 0;
+    /* Evitar que los botones se encojan demasiado */
+    margin-top: 0;
+}
+
+/* BOONES DE LA CAMARA */
+.btn-1 {
+    --clr-font-main: hsla(0 0% 20% / 100);
+    --btn-bg-1: rgb(35, 67, 77);
+    --btn-bg-2: rgb(113, 116, 122);
+    --btn-bg-color: hsla(360 100% 100% / 1);
+    --radii: 0.5em;
+    cursor: pointer;
+    padding: 0.9em 1.4em;
+    min-width: 120px;
+    min-height: 44px;
+    font-size: var(--size, 1rem);
+    font-weight: 500;
+    transition: 0.8s;
+    background-size: 280% auto;
+    background-image: linear-gradient(325deg, var(--btn-bg-2) 0%, var(--btn-bg-1) 55%, var(--btn-bg-2) 90%);
+    border: none;
+    border-radius: var(--radii);
+    color: var(--btn-bg-color);
+    box-shadow: 0px 0px 20px rgba(31, 34, 36, 0.5), 0px 5px 5px -1px rgba(38, 45, 56, 0.25), inset 4px 4px 8px rgba(11, 29, 37, 0.5), inset -4px -4px 8px rgba(21, 27, 36, 0.35);
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-right: 10px;
+    width: 50%;
+    /* Ajustar al ancho del contenedor */
+    max-width: 200px;
+    /* Ancho máximo */
+    box-sizing: border-box;
+    /* Incluir padding en el ancho */
+}
+
+/* SELECTOR DE MOTORES*/
+
+.radio-inputs {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 0.5rem;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
+    padding: 0.25rem;
+    font-size: 14px;
+    width: 500px;
+    /* Establecer un ancho fijo */
+    height: 100%;
+    /* Puedes establecer una altura fija si lo deseas */
+    min-height: 10px;
+    /* Establecer una altura mínima */
+    margin-top: 0;
+}
+
+
+/* SELECTOR DE VELOCIDADES*/
+.radio-inputs1 {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 1rem;
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+    box-sizing: border-box;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15), -5px -5px 15px rgba(175, 44, 44, 0.8);
+    padding: 0.5rem;
+    font-size: 14px;
+    gap: 0.5rem;
+    width: 100%;
+    /* Ajustar al ancho del contenedor */
+    max-width: 350px;
+    /* Ancho máximo */
+    margin-top: 5px;
+    /* Margen superior */
+}
+
+/* TEXTOS DEL SELECTOR DE TRANSMISION Y LAS VELOCIDADES*/
+
+.textos {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.textos1 {
+    margin-top: 2px;
+    margin-bottom: 0px;
+    font-weight: bold;
+    color: #000000;
+}
+
+/* CHECKBOXES DE SELECTOR DE VELOCIDADES */
+
+.material-checkbox {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #777777;
+    cursor: pointer;
+}
+
+/*BOTONES DE LOS SERVOMOTORES */
+
+
+/* Estilos para los controles de servo */
+.servo-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    width: 100%;
+    max-width: 500px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    margin: 10px 0;
+}
+
+.servo-control h3 {
+    color: #fff;
+    margin: 0;
+    text-align: center;
+}
+
+.servo-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+}
+
+.servo-buttons .button {
+    flex: 0 1 auto;
+    min-width: 120px;
+}
+
+.angle-text {
+    color: #fff;
+    margin: 5px 0;
+    text-align: center;
+}
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.speed-text {
+    color: #fff;
+    margin: 0;
+    min-width: 150px;
+    text-align: right;
+}
+
+.slider-container input[type="range"] {
+    flex: 1;
+    height: 10px;
+    border-radius: 5px;
+    background: linear-gradient(to right, #0ce39a, #69007f);
+    appearance: none;
+    outline: none;
+}
+
+.slider-container input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #69007f;
+}
+
+.checkbox-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Ajuste para mantener consistencia con el diseño existente */
+.servo-control .button {
+    margin: 0;
+}
+
+
+
+
+
+
+
+/* Agregar estilos para el indicador de estado */
+.connection-status {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 1000;
+}
+
+.connection-status.connected {
+    background-color: rgba(0, 255, 0, 0.2);
+    color: green;
+}
+
+.connection-status.disconnected {
+    background-color: rgba(255, 0, 0, 0.2);
+    color: red;
+}
+
+.button.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* Estilos para mostrar el valor del límite de forma más destacada */
+.servo-control p span#mg995-limit,
+.servo-control p span#ds04-limit {
+    font-weight: bold;
+    color: #4a90e2;
+    padding: 2px 6px;
+    background-color: rgba(74, 144, 226, 0.1);
+    border-radius: 4px;
+}
+
+/* Estilo para el slider de límite */
+.angle-slider {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.angle-slider:hover {
+    opacity: 1;
+}
+
+.angle-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #4a90e2;
+    cursor: pointer;
+}
+
+.angle-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #4a90e2;
+    cursor: pointer;
+}
+
+/* Etiqueta explicativa del límite */
+.limit-explanation {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+
+
+/* Estilos adicionales para indicadores de conexión */
+.connection-status.partial {
+    background-color: rgba(255, 165, 0, 0.2);
+    color: orange;
+}
+
+/* Estilo para los controles de servo deshabilitados */
+.servo-control.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Etiqueta indicadora de Arduino */
+.arduino-indicator {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    margin-left: 5px;
+    color: white;
+}
+
+.arduino-indicator.connected {
+    background-color: green;
+}
+
+.arduino-indicator.disconnected {
+    background-color: red;
+}
